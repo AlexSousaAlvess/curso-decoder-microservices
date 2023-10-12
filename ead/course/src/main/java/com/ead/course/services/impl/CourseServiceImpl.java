@@ -9,6 +9,9 @@ import com.ead.course.repositories.ModuleRepository;
 import com.ead.course.services.CourseService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,8 +31,8 @@ public class CourseServiceImpl implements CourseService {
     LessonRepository lessonRepository;
 
     @Override
-    public List<CourseModel> findAll() {
-        return courseRepository.findAll();
+    public Page<CourseModel> findAll(Specification<CourseModel> spec, Pageable pageable) {
+        return courseRepository.findAll(spec, pageable);
     }
 
     @Transactional
@@ -40,7 +43,7 @@ public class CourseServiceImpl implements CourseService {
         if(!moduleModelList.isEmpty()){
             for(ModuleModel module: moduleModelList){
                 List<LessonModel> lessonModelList = lessonRepository.
-                        findAllLessonsIntoModule(module.getMuduleId());
+                        findAllLessonsIntoModule(module.getModuleId());
                 if(!lessonModelList.isEmpty()){
                     lessonRepository.deleteAll(lessonModelList);
                 }
