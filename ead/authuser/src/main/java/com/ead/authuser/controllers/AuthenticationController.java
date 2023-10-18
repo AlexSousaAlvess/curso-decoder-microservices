@@ -6,6 +6,8 @@ import com.ead.authuser.enums.UserType;
 import com.ead.authuser.models.UserModel;
 import com.ead.authuser.services.UserService;
 import com.fasterxml.jackson.annotation.JsonView;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,6 +22,8 @@ import java.time.ZoneId;
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RequestMapping("/auth")
 public class AuthenticationController {
+
+    Logger logger = LoggerFactory.getLogger(AuthenticationController.class);
 
     @Autowired
     UserService userService;
@@ -45,4 +49,14 @@ public class AuthenticationController {
         userService.save(userModel);
         return ResponseEntity.status(HttpStatus.CREATED).body(userModel);
     };
+
+    @GetMapping("/")
+    public String index(){
+        logger.trace("TRACE");//Vai trazer informações bastante detalhada
+        logger.debug("DEBUG");//Usada principalmente em ambiente de desenvolvimento
+        logger.info("INFO");//Usada principalmente para o ambiente  produção
+        logger.warn("WARN");//Usada para para mostrar algum problema mas não necessariamente um erro
+        logger.error("ERROR");//Usada para mostrar algum erro
+        return "Loggin Spring Boot...";
+    }
 }
