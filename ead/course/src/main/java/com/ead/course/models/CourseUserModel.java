@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Data;
+import net.kaczmarzyk.spring.data.jpa.web.annotation.Join;
 
 import java.io.Serializable;
 import java.util.Set;
@@ -25,9 +26,4 @@ public class CourseUserModel implements Serializable {
 
     @Column(nullable = false)
     private UUID userId;
-
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @OneToMany(mappedBy = "course", fetch = FetchType.LAZY)
-    private Set<CourseUserModel> coursesUsers;
-
 }
