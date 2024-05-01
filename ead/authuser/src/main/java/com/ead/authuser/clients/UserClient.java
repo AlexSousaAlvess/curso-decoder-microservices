@@ -2,13 +2,16 @@ package com.ead.authuser.clients;
 
 import com.ead.authuser.dtos.CourseDto;
 import com.ead.authuser.dtos.ResponsePageDto;
+import com.ead.authuser.services.UtilsService;
 import lombok.extern.log4j.Log4j2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -25,24 +28,24 @@ public class UserClient {
     @Autowired
     RestTemplate restTemplate;
 
-    String REQUEST_URI = "http://localhost:8082";
+    @Autowired
+    UtilsService utilsService;
 
     public Page<CourseDto> getAllCoursesByUser(UUID userId, Pageable pageable) {
         List<CourseDto> searchResult = null;
-        String url = REQUEST_URI + "/courses?userId=" + userId + "&page=" + pageable.getPageNumber()
-                + "&size=" + pageable.getPageSize() +
-                "&sort=" + pageable.getSort().toString().replaceAll(": ", ",");
+        String url = utilsService.createUrl(userId, pageable);
         log.debug("Request  URL: {}", url);
         log.info("Request URL: {}", url);
         try {
             ParameterizedTypeReference<ResponsePageDto<CourseDto>> responseType =
                     new ParameterizedTypeReference<ResponsePageDto<CourseDto>>() {};
-            ResponseEntity<ResponsePageDto<CourseDto>> result = restTemplate.
+            ResponseEntity<ResponsePageDto<CourseDto>> result = restTemplate.exchange(url, HttpMethod.GET,  null, responseType);
+            searchResult = result.getBody().getContent();
             log.debug("Response Number of Elements: {}", searchResult.size());
         }catch (HttpStatusCodeException e){
             log.error("Error request / courses {}", e);
         }
         log.info("Ending request / courses {}", userId);
-        return;
+        return new PageImpl<>(searchResult);
     }
 }
