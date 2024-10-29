@@ -5,23 +5,13 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/ead-authuser
     username: postgres
-    password: "admin"
+    password: admin
   jpa:
     hibernate:
       ddl-auto: update
       dialect: org.hibernate.dialect.PostgreSQLDialect
       jdbc:
-        lob.non-contextual-creation: true
+        lob.non-contextial-creation: true
     properties:
       hibernate:
         show_sql: true
-  output:
-    ansi:
-      enabled: always
-
-logging:
-  level:
-    com.ead: TRACE
-    root: INFO
-    org.springframework.web: DEBUG
-    org.hibernate: INFO
